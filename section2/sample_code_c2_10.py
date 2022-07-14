@@ -9,6 +9,8 @@ import numpy as np
 #scipyのsignalモジュールをインポート（stft等信号処理計算用)
 import scipy.signal as sp
 
+import sounddevice as sd
+
 #読み込むサンプルファイル
 sample_wave_file="./CMU_ARCTIC/cmu_us_aew_arctic/wav/arctic_a0001.wav"
 
@@ -27,8 +29,26 @@ f,t,stft_data=sp.stft(data,fs=wav.getframerate(),window="hann",nperseg=512,nover
 #時間領域の波形に戻す
 t,data_post=sp.istft(stft_data,fs=wav.getframerate(),window="hann",nperseg=512,noverlap=256)
 
+#短時間フーリエ変換を行う
+f,t,stft_data_4096=sp.stft(data,fs=wav.getframerate(),window="hann",nperseg=4096,noverlap=2048)
+
+#時間領域の波形に戻す
+t,data_post_4096=sp.istft(stft_data_4096,fs=wav.getframerate(),window="hann",nperseg=4096,noverlap=2048)
+
 #2バイトのデータに変換
 data_post=data_post.astype(np.int16)
+
+#dataを再生する
+sd.play(data,wav.getframerate())
+sd.wait()
+
+#data_postを再生する
+sd.play(data_post,wav.getframerate())
+sd.wait()
+
+#dataを再生する(!!!!音割れ注意!!!!)
+sd.play(data_post_4096,wav.getframerate())
+sd.wait()
 
 #waveファイルに書き込む
 wave_out = wave.open("./istft_post_wave.wav", 'w')
