@@ -252,7 +252,7 @@ n_channels=np.shape(mic_alignments)[1]
 #マイクロホンアレイの座標
 R=mic_alignments+mic_array_loc[:,None]
 
-is_use_reverb=True
+is_use_reverb=False
 
 if is_use_reverb==False:
     # 部屋を生成する
